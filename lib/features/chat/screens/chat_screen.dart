@@ -1,7 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_message_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_local_dto.dart';
+import 'package:surf_practice_chat_flutter/features/chat/models/send_message_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/repository/chat_repository.dart';
 
 /// Main screen of chat app, containing messages.
@@ -59,7 +61,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _onSendPressed(String messageText) async {
-    final messages = await widget.chatRepository.sendMessage(messageText);
+    final messages = await widget.chatRepository.sendMessage(SendMessageDto(
+      text: messageText,
+    ));
+
     setState(() {
       _currentMessages = messages;
     });
@@ -119,6 +124,16 @@ class _ChatTextField extends StatelessWidget {
               ),
             ),
             IconButton(
+              onPressed: () async {
+                final files = await FilePicker.platform.pickFiles(
+                  type: FileType.image,
+                );
+
+                print(files);
+              },
+              icon: const Icon(Icons.attach_file),
+            ),
+            IconButton(
               onPressed: () => onSendPressed(_textEditingController.text),
               icon: const Icon(Icons.send),
               color: colorScheme.onSurface,
@@ -170,10 +185,7 @@ class _ChatMessage extends StatelessWidget {
     return Material(
       color: chatData.chatUserDto is ChatUserLocalDto ? colorScheme.primary.withOpacity(.1) : null,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 18,
-          vertical: 18,
-        ),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -188,7 +200,7 @@ class _ChatMessage extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
-                  Text(chatData.message ?? ''),
+                  Text(chatData.text ?? ''),
                 ],
               ),
             ),
@@ -200,7 +212,7 @@ class _ChatMessage extends StatelessWidget {
 }
 
 class _ChatAvatar extends StatelessWidget {
-  static const double _size = 42;
+  static const _size = 42.0;
 
   final ChatUserDto userData;
 
@@ -221,13 +233,11 @@ class _ChatAvatar extends StatelessWidget {
         shape: const CircleBorder(),
         child: Center(
           child: Text(
-            userData.name != null
-                ? '${userData.name!.split(' ').first[0]}${userData.name!.split(' ').last[0]}'
-                : '',
+            userData.initials,
             style: TextStyle(
               color: colorScheme.onPrimary,
               fontWeight: FontWeight.bold,
-              fontSize: 24,
+              fontSize: 24.0,
             ),
           ),
         ),

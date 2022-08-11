@@ -16,7 +16,7 @@ class ChatMessageGeolocationDto extends ChatMessageDto {
     required DateTime createdDate,
   }) : super(
           chatUserDto: chatUserDto,
-          message: message,
+          text: message,
           createdDateTime: createdDate,
         );
 
@@ -27,7 +27,7 @@ class ChatMessageGeolocationDto extends ChatMessageDto {
   })  : location = ChatGeolocationDto.fromGeoPoint(sjMessageDto.geopoint!),
         super(
           createdDateTime: sjMessageDto.created,
-          message: sjMessageDto.text,
+          text: sjMessageDto.text,
           chatUserDto: ChatUserDto.fromSJClient(sjUserDto),
         );
 
