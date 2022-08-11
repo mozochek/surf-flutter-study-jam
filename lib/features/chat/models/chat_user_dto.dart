@@ -30,6 +30,16 @@ class ChatUserDto {
     return '${firstAndLastNames.first[0]}${firstAndLastNames.last[0]}';
   }
 
+  bool get haveName => name != null;
+
+  String get initials {
+    if (haveName == false) return '??';
+
+    final firstAndLastNames = name!.split(' ');
+
+    return '${firstAndLastNames.first[0]}${firstAndLastNames.last[0]}';
+  }
+
   @override
   String toString() => 'ChatUserDto(id: $id, name: $name)';
 }

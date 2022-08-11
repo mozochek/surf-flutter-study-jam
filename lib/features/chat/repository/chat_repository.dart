@@ -157,17 +157,6 @@ class ChatRepository implements IChatRepository {
               sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
               isUserLocal: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId).id == localUser?.id,
             );
-
-            // return sjMessageDto.geopoint == null
-            //   ? ChatMessageDto.fromSJClient(
-            //       sjMessageDto: sjMessageDto,
-            //       sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
-            //       isUserLocal: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId).id == localUser?.id,
-            //     )
-            //   : ChatMessageGeolocationDto.fromSJClient(
-            //       sjMessageDto: sjMessageDto,
-            //       sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
-            //     );
           },
         )
         .toList();
