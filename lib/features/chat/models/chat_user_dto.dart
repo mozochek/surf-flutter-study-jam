@@ -2,6 +2,8 @@ import 'package:surf_study_jam/surf_study_jam.dart';
 
 /// Basic model, representing chat user.
 class ChatUserDto {
+  final int id;
+
   /// User's name.
   ///
   /// May be `null`.
@@ -9,11 +11,14 @@ class ChatUserDto {
 
   /// Constructor for [ChatUserDto].
   const ChatUserDto({
+    required this.id,
     required this.name,
   });
 
   /// Factory-like constructor for converting DTO from [StudyJamClient].
-  ChatUserDto.fromSJClient(SjUserDto sjUserDto) : name = sjUserDto.username;
+  ChatUserDto.fromSJClient(SjUserDto sjUserDto)
+      : id = sjUserDto.id,
+        name = sjUserDto.username;
 
   bool get haveName => name != null;
 
@@ -26,5 +31,5 @@ class ChatUserDto {
   }
 
   @override
-  String toString() => 'ChatUserDto(name: $name)';
+  String toString() => 'ChatUserDto(id: $id, name: $name)';
 }

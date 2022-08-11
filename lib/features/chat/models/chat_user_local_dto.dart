@@ -8,11 +8,12 @@ import 'package:surf_study_jam/surf_study_jam.dart';
 class ChatUserLocalDto extends ChatUserDto {
   /// Constructor for [ChatUserLocalDto].
   ChatUserLocalDto({
+    required int id,
     required String name,
-  }) : super(name: name);
+  }) : super(id: id, name: name);
 
   /// Factory-like constructor for converting DTO from [StudyJamClient].
-  ChatUserLocalDto.fromSJClient(SjUserDto sjUserDto) : super(name: sjUserDto.username);
+  ChatUserLocalDto.fromSJClient(SjUserDto sjUserDto) : super(id: sjUserDto.id, name: sjUserDto.username);
 
   @override
   String toString() => 'ChatUserLocalDto(name: $name)';

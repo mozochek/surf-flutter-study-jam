@@ -6,6 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:surf_practice_chat_flutter/features/auth/screens/auth_screen.dart';
 import 'package:surf_practice_chat_flutter/features/core/l10n/app_localizations.dart';
 
+// TODO: кэширование токена
+// TODO: иконку с картой убрать в интерактивное меню сообщения (продумать как это будет работать, через долгое нажатие по сообщению)
+// TODO: проработать навигацию и сделать выход из аккаунта
+// TODO: добавить сплэш на стороне флаттера и читать кэш
+// TODO: добавить кнопку скролла чата вниз, когда проскроллено вверх и начался скролл вниз
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
