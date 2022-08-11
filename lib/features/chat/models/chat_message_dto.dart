@@ -1,5 +1,6 @@
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_local_dto.dart';
+import 'package:surf_practice_chat_flutter/features/chat/models/send_message_dto.dart';
 import 'package:surf_study_jam/surf_study_jam.dart';
 
 /// Data transfer object representing simple chat message.
@@ -15,12 +16,15 @@ class ChatMessageDto {
 
   final List<String>? images;
 
+  final LatLng? coords;
+
   /// Constructor for [ChatMessageDto].
   const ChatMessageDto({
     required this.chatUserDto,
     required this.text,
     required this.createdDateTime,
     this.images,
+    this.coords,
   });
 
   /// Named constructor for converting DTO from [StudyJamClient].
@@ -31,7 +35,8 @@ class ChatMessageDto {
   })  : chatUserDto = isUserLocal ? ChatUserLocalDto.fromSJClient(sjUserDto) : ChatUserDto.fromSJClient(sjUserDto),
         text = sjMessageDto.text,
         createdDateTime = sjMessageDto.created,
-        images = sjMessageDto.images;
+        images = sjMessageDto.images,
+        coords = sjMessageDto.geopoint != null ? LatLng.fromGeopoints(sjMessageDto.geopoint!) : null;
 
   @override
   String toString() =>

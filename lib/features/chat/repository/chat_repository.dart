@@ -86,6 +86,7 @@ class ChatRepository implements IChatRepository {
     }
     await _studyJamClient.sendMessage(SjMessageSendsDto(
       text: messageText,
+      images: message.images?.toList(),
     ));
 
     final messages = await _fetchAllMessages();
@@ -150,16 +151,24 @@ class ChatRepository implements IChatRepository {
 
     return messages
         .map(
-          (sjMessageDto) => sjMessageDto.geopoint == null
-              ? ChatMessageDto.fromSJClient(
-                  sjMessageDto: sjMessageDto,
-                  sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
-                  isUserLocal: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId).id == localUser?.id,
-                )
-              : ChatMessageGeolocationDto.fromSJClient(
-                  sjMessageDto: sjMessageDto,
-                  sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
-                ),
+          (sjMessageDto) {
+            return ChatMessageDto.fromSJClient(
+              sjMessageDto: sjMessageDto,
+              sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
+              isUserLocal: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId).id == localUser?.id,
+            );
+
+            // return sjMessageDto.geopoint == null
+            //   ? ChatMessageDto.fromSJClient(
+            //       sjMessageDto: sjMessageDto,
+            //       sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
+            //       isUserLocal: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId).id == localUser?.id,
+            //     )
+            //   : ChatMessageGeolocationDto.fromSJClient(
+            //       sjMessageDto: sjMessageDto,
+            //       sjUserDto: users.firstWhere((userDto) => userDto.id == sjMessageDto.userId),
+            //     );
+          },
         )
         .toList();
   }
