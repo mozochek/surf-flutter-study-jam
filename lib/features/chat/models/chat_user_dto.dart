@@ -15,6 +15,16 @@ class ChatUserDto {
   /// Factory-like constructor for converting DTO from [StudyJamClient].
   ChatUserDto.fromSJClient(SjUserDto sjUserDto) : name = sjUserDto.username;
 
+  bool get haveName => name != null;
+
+  String get initials {
+    if (haveName == false) return '??';
+
+    final firstAndLastNames = name!.split(' ');
+
+    return '${firstAndLastNames.first[0]}${firstAndLastNames.last[0]}';
+  }
+
   @override
   String toString() => 'ChatUserDto(name: $name)';
 }
