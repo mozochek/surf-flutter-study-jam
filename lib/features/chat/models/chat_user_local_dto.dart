@@ -7,7 +7,7 @@ import 'package:surf_study_jam/surf_study_jam.dart';
 /// from this device.
 class ChatUserLocalDto extends ChatUserDto {
   /// Constructor for [ChatUserLocalDto].
-  ChatUserLocalDto({
+  const ChatUserLocalDto({
     required int id,
     required String name,
     required String login,

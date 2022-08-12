@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:surf_practice_chat_flutter/features/auth/screens/auth_screen.dart';
 import 'package:surf_practice_chat_flutter/features/core/l10n/app_localizations.dart';
+import 'package:surf_practice_chat_flutter/features/core/themes.dart';
 
 // TODO: кэширование токена
 // TODO: проработать навигацию и сделать выход из аккаунта
@@ -13,6 +14,7 @@ import 'package:surf_practice_chat_flutter/features/core/l10n/app_localizations.
 // TODO: на экране авторизации сделать переходы по полям через фокус
 // TODO: доработать все текстовые поля для более удобного ввода
 // TODO: не забыть прогреть шейдеры
+// TODO: подрефакторить блоки
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -34,9 +36,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Surf Chat',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
+      theme: Themes.defaultTheme,
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/auth/bloc/auth_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/auth/bloc/auth_form_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/auth/models/token_dto.dart';
+import 'package:surf_practice_chat_flutter/features/auth/models/user_with_token_dto.dart';
 import 'package:surf_practice_chat_flutter/features/auth/repository/auth_repository.dart';
 import 'package:surf_practice_chat_flutter/features/chat/screens/chat_screen.dart';
+import 'package:surf_practice_chat_flutter/features/topics/screens/topics_screen.dart';
 import 'package:surf_study_jam/surf_study_jam.dart';
 
 class AuthScreenScope extends StatelessWidget {
@@ -31,7 +33,7 @@ class AuthScreenScope extends StatelessWidget {
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           state.mapOrNull(
-            completed: (state) => _onUserSuccessfullySignedIn(context, state.tokenDto),
+            completed: (state) => _onUserSuccessfullySignedIn(context, state.userWithTokenDto),
             failed: (state) => _onUserSignInFailed(context, state.message),
           );
         },
@@ -40,11 +42,11 @@ class AuthScreenScope extends StatelessWidget {
     );
   }
 
-  void _onUserSuccessfullySignedIn(BuildContext context, TokenDto tokenDto) {
+  void _onUserSuccessfullySignedIn(BuildContext context, UserWithTokenDto userWithTokenDto) {
     Navigator.push<ChatScreen>(
       context,
       MaterialPageRoute(
-        builder: (_) => ChatScreen(tokenDto: tokenDto),
+        builder: (_) => TopicsScreen(userWithTokenDto: userWithTokenDto),
       ),
     );
   }

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:surf_practice_chat_flutter/features/auth/models/token_dto.dart';
+import 'package:surf_practice_chat_flutter/features/chat/bloc/current_chat_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/bloc/current_message_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/bloc/message_sender_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/bloc/messages_loading_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/send_message_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/repository/chat_repository.dart';
-import 'package:surf_study_jam/surf_study_jam.dart';
+import 'package:surf_practice_chat_flutter/features/core/scope/authorized_scope.dart';
 
 class ChatScreenScope extends StatefulWidget {
-  final TokenDto tokenDto;
+  final int chatId;
   final Widget child;
 
   const ChatScreenScope({
-    required this.tokenDto,
+    required this.chatId,
     required this.child,
     Key? key,
   }) : super(key: key);
@@ -21,13 +21,19 @@ class ChatScreenScope extends StatefulWidget {
   @override
   State<ChatScreenScope> createState() => _ChatScreenScopeState();
 
+  static CurrentChatBloc currentChatBloc(BuildContext context) => context.read<CurrentChatBloc>();
+
   static MessagesLoadingBloc messagesLoadingBloc(BuildContext context) => context.read<MessagesLoadingBloc>();
 
   static CurrentMessageBloc currentMessageBloc(BuildContext context) => context.read<CurrentMessageBloc>();
 
   static MessageSenderBloc messageSenderBloc(BuildContext context) => context.read<MessageSenderBloc>();
 
-  static void loadMessages(BuildContext context) => messagesLoadingBloc(context).add(const MessagesLoadingEvent.load());
+  static int getCurrentChatId(BuildContext context) => currentChatBloc(context).state.chatId;
+
+  static void loadMessages(BuildContext context) => messagesLoadingBloc(context).add(MessagesLoadingEvent.load(
+        getCurrentChatId(context),
+      ));
 
   static void setMessageText(BuildContext context, String text) =>
       currentMessageBloc(context).add(CurrentMessageEvent.setText(text));
@@ -42,6 +48,7 @@ class ChatScreenScope extends StatefulWidget {
     final messageState = currentMessageBloc(context).state;
 
     final sendMessageDto = SendMessageDto(
+      chatId: getCurrentChatId(context),
       text: messageState.text,
       images: messageState.images,
     );
@@ -57,19 +64,18 @@ class _ChatScreenScopeState extends State<ChatScreenScope> {
   void initState() {
     super.initState();
 
-    _chatRepository = ChatRepository(
-      StudyJamClient().getAuthorizedClient(widget.tokenDto.token),
-    );
+    _chatRepository = ChatRepository(AuthorizedScope.authorizedClient(context));
   }
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => CurrentChatBloc(chatId: widget.chatId)),
         BlocProvider(
-          create: (_) => MessagesLoadingBloc(
+          create: (context) => MessagesLoadingBloc(
             chatRepository: _chatRepository,
-          )..add(const MessagesLoadingEvent.load()),
+          )..add(MessagesLoadingEvent.load(ChatScreenScope.getCurrentChatId(context))),
         ),
         BlocProvider(create: (_) => MessageSenderBloc(chatRepository: _chatRepository)),
         BlocProvider(create: (_) => CurrentMessageBloc()),

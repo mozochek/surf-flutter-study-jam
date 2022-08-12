@@ -19,7 +19,7 @@ class MessagesLoadingBloc extends Bloc<MessagesLoadingEvent, MessagesLoadingStat
           load: (event) async {
             try {
               emit(const MessagesLoadingState.inProgress());
-              final messages = await _chatRepository.getMessages();
+              final messages = await _chatRepository.getMessages(event.chatId);
               emit(MessagesLoadingState.completed(messages));
             } on Object {
               emit(const MessagesLoadingState.failed());
@@ -37,7 +37,7 @@ class MessagesLoadingBloc extends Bloc<MessagesLoadingEvent, MessagesLoadingStat
 class MessagesLoadingEvent with _$MessagesLoadingEvent {
   const MessagesLoadingEvent._();
 
-  const factory MessagesLoadingEvent.load() = _MessagesLoadingEventLoad;
+  const factory MessagesLoadingEvent.load(int chatId) = _MessagesLoadingEventLoad;
 }
 
 @freezed

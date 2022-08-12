@@ -1,8 +1,6 @@
 import 'package:surf_practice_chat_flutter/features/chat/exceptions/invalid_message_exception.dart';
 import 'package:surf_practice_chat_flutter/features/chat/exceptions/user_not_found_exception.dart';
-import 'package:surf_practice_chat_flutter/features/chat/models/chat_geolocation_geolocation_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_message_dto.dart';
-import 'package:surf_practice_chat_flutter/features/chat/models/chat_message_location_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_user_local_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/send_message_dto.dart';
@@ -22,7 +20,7 @@ abstract class IChatRepository {
   /// the same name that you specified in [sendMessage].
   ///
   /// Throws an [Exception] when some error appears.
-  Future<Iterable<ChatMessageDto>> getMessages();
+  Future<Iterable<ChatMessageDto>> getMessages(int chatId);
 
   /// Sends the message by with [message] content.
   ///
@@ -33,22 +31,6 @@ abstract class IChatRepository {
   /// [message] mustn't be empty and longer than [maxMessageLength]. Throws an
   /// [InvalidMessageException].
   Future<Iterable<ChatMessageDto>> sendMessage(SendMessageDto message);
-
-  /// Sends the message by [location] contents. [message] is optional.
-  ///
-  /// Returns actual messages [ChatMessageDto] from a source (given your sent
-  /// [message]). Message with location point returns as
-  /// [ChatMessageGeolocationDto].
-  ///
-  /// Throws an [Exception] when some error appears.
-  ///
-  ///
-  /// If [message] is non-null, content mustn't be empty and longer than
-  /// [maxMessageLength]. Throws an [InvalidMessageException].
-  Future<Iterable<ChatMessageDto>> sendGeolocationMessage({
-    required ChatGeolocationDto location,
-    String? message,
-  });
 
   /// Retrieves chat's user via his [userId].
   ///
@@ -67,8 +49,8 @@ class ChatRepository implements IChatRepository {
   ChatRepository(this._studyJamClient);
 
   @override
-  Future<Iterable<ChatMessageDto>> getMessages() async {
-    final messages = await _fetchAllMessages();
+  Future<Iterable<ChatMessageDto>> getMessages(int chatId) async {
+    final messages = await _fetchAllMessages(chatId);
 
     return messages;
   }
@@ -85,29 +67,12 @@ class ChatRepository implements IChatRepository {
       throw InvalidMessageException('Message "$message" is too large.');
     }
     await _studyJamClient.sendMessage(SjMessageSendsDto(
+      chatId: message.chatId,
       text: messageText,
       images: message.images?.toList(),
     ));
 
-    final messages = await _fetchAllMessages();
-
-    return messages;
-  }
-
-  @override
-  Future<Iterable<ChatMessageDto>> sendGeolocationMessage({
-    required ChatGeolocationDto location,
-    String? message,
-  }) async {
-    if (message != null && message.length > IChatRepository.maxMessageLength) {
-      throw InvalidMessageException('Message "$message" is too large.');
-    }
-    await _studyJamClient.sendMessage(SjMessageSendsDto(
-      text: message,
-      geopoint: location.toGeopoint(),
-    ));
-
-    final messages = await _fetchAllMessages();
+    final messages = await _fetchAllMessages(message.chatId);
 
     return messages;
   }
@@ -122,7 +87,7 @@ class ChatRepository implements IChatRepository {
     return localUser?.id == user.id ? ChatUserLocalDto.fromSJClient(user) : ChatUserDto.fromSJClient(user);
   }
 
-  Future<Iterable<ChatMessageDto>> _fetchAllMessages() async {
+  Future<Iterable<ChatMessageDto>> _fetchAllMessages(int chatId) async {
     final messages = <SjMessageDto>[];
 
     var isLimitBroken = false;
@@ -133,8 +98,11 @@ class ChatRepository implements IChatRepository {
     // API-request limitations, we can't load everything at one request, so
     // we're doing it in cycle.
     while (!isLimitBroken) {
-      final batch = await _studyJamClient.getMessages(lastMessageId: lastMessageId, limit: 10000);
+      final batch = await _studyJamClient.getMessages(chatId: chatId, lastMessageId: lastMessageId, limit: 10000);
       messages.addAll(batch);
+
+      if (batch.isEmpty) return [];
+
       lastMessageId = batch.last.chatId;
       if (batch.length < 10000) {
         isLimitBroken = true;

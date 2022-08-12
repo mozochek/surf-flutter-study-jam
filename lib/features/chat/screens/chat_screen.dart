@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_list_view/flutter_list_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:map_launcher/map_launcher.dart';
-import 'package:surf_practice_chat_flutter/features/auth/models/token_dto.dart';
 import 'package:surf_practice_chat_flutter/features/chat/bloc/current_message_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/bloc/messages_loading_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/chat/models/chat_message_dto.dart';
@@ -25,17 +24,17 @@ import 'package:surf_practice_chat_flutter/features/core/widgets/keyboard_height
 import 'package:surf_practice_chat_flutter/features/core/widgets/overscroll_glow_disabler.dart';
 
 class ChatScreen extends StatelessWidget {
-  final TokenDto tokenDto;
+  final int id;
 
   const ChatScreen({
-    required this.tokenDto,
+    required this.id,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChatScreenScope(
-      tokenDto: tokenDto,
+      chatId: id,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: const _ChatAppBar(),
@@ -515,11 +514,10 @@ class _ChatMessage extends StatelessWidget {
               : nextIsTheSameUser
                   ? const SizedBox(width: _MessageSenderAvatar._size)
                   : _MessageSenderAvatar(userData: messageData.chatUserDto),
-          const SizedBox(width: 16.0),
+          const SizedBox(width: 8.0),
           Expanded(
             child: Material(
-              elevation: 2.0,
-              color: isMessageSentByThisUser ? Colors.greenAccent.shade100 : null,
+              color: isMessageSentByThisUser ? Colors.greenAccent.shade100 : Colors.white,
               borderRadius: isMessageSentByThisUser
                   ? const BorderRadius.all(Radius.circular(12.0)).copyWith(bottomRight: Radius.zero)
                   : const BorderRadius.all(Radius.circular(12.0)).copyWith(bottomLeft: Radius.zero),
@@ -671,7 +669,6 @@ class _MessageImagesPreview extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       // TODO: просмотр фоток
-                      print('должны открыться все фотки');
                     },
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(4.0)),
@@ -729,6 +726,17 @@ class _RoundedNetworkImage extends StatelessWidget {
           imageUrl: imgUrl,
           height: 128.0,
           fit: BoxFit.fill,
+          errorWidget: (_, __, ___) {
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+              ),
+              child: Center(
+                child: Text(AppLocalizations.of(context).imageLoadingError),
+              ),
+            );
+          },
         ),
       ),
     );
