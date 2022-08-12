@@ -4,6 +4,10 @@
 
 ### Android - apk в папке docs/apk
 
+# Генерация файлов
+- ```flutter gen-l10n``` - локализация
+- ```flutter pub run build_runner build``` - freezed классы
+
 # Архитектура
 
 Feature based архитектура, в которой каждая фича может содержать неограниченное кол-во child фич, декомпозирующих свою
