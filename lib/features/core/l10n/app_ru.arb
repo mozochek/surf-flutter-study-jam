@@ -3,5 +3,15 @@
   "appName": "Surf чат",
   "login": "Логин",
   "password": "Пароль",
-  "onward": "Далее"
+  "onward": "Далее",
+  "noMessages": "Сообщений нет",
+  "messagesLoadingError": "Ошибка загрузки сообщений",
+  "message": "Сообщение",
+  "addGeoPoint": "Добавить геометку",
+  "attach": "Прикрепить",
+  "send": "Отправить",
+  "refresh": "Обновить",
+  "attachedGeoPoint": "Прикреплённая точка",
+  "onTheMap": "На карте",
+  "mapAppsNotFound": "Приложения с картами не найдены"
 }

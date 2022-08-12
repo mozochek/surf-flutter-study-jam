@@ -33,9 +33,9 @@ class ChatMessageDto {
     required SjUserDto sjUserDto,
     required bool isUserLocal,
   })  : chatUserDto = isUserLocal ? ChatUserLocalDto.fromSJClient(sjUserDto) : ChatUserDto.fromSJClient(sjUserDto),
-        text = sjMessageDto.text,
+        text = sjMessageDto.text?.trim(),
         createdDateTime = sjMessageDto.created,
-        images = sjMessageDto.images,
+        images = sjMessageDto.images?.where((imgUrl) => Uri.parse(imgUrl).isAbsolute).toList(),
         coords = sjMessageDto.geopoint != null ? LatLng.fromGeopoints(sjMessageDto.geopoint!) : null;
 
   @override

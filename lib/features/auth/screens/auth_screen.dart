@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:surf_practice_chat_flutter/features/auth/bloc/auth_bloc.dart';
 import 'package:surf_practice_chat_flutter/features/auth/scope/auth_screen_scope.dart';
 import 'package:surf_practice_chat_flutter/features/core/l10n/app_localizations.dart';
 
@@ -77,9 +79,14 @@ class _LoginButton extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: ElevatedButton(
-            onPressed: () => AuthScreenScope.tryPerformSignIn(context),
-            child: Text(AppLocalizations.of(context).onward.toUpperCase()),
+          child: BlocBuilder<AuthBloc, AuthState>(
+            buildWhen: (prev, curr) => prev.isInProgress != curr.isInProgress,
+            builder: (context, state) {
+              return ElevatedButton(
+                onPressed: state.isInProgress ? null : () => AuthScreenScope.tryPerformSignIn(context),
+                child: Text(AppLocalizations.of(context).onward.toUpperCase()),
+              );
+            },
           ),
         ),
       ],
