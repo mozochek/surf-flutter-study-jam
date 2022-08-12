@@ -2,11 +2,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 @immutable
 class SendMessageDto {
+  final int chatId;
   final String? text;
   final Iterable<String>? images;
   final LatLng? coordinates;
 
   const SendMessageDto({
+    required this.chatId,
     this.text,
     this.images,
     this.coordinates,

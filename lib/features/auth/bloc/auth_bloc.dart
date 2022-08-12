@@ -2,7 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:surf_practice_chat_flutter/features/auth/exceptions/auth_exception.dart';
-import 'package:surf_practice_chat_flutter/features/auth/models/token_dto.dart';
+import 'package:surf_practice_chat_flutter/features/auth/models/user_with_token_dto.dart';
 import 'package:surf_practice_chat_flutter/features/auth/repository/auth_repository.dart';
 
 part 'auth_bloc.freezed.dart';
@@ -26,12 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(const AuthState.inProgress());
 
-      final tokenDto = await _authRepository.signIn(
+      final userWithTokenDto = await _authRepository.signIn(
         login: event.login,
         password: event.password,
       );
 
-      emit(AuthState.completed(tokenDto));
+      emit(AuthState.completed(userWithTokenDto));
     } on Object catch (e) {
       if (e is AuthException) {
         emit(AuthState.failed(e.message));
@@ -62,7 +62,7 @@ class AuthState with _$AuthState {
 
   const factory AuthState.inProgress() = _AuthStateInProgress;
 
-  const factory AuthState.completed(TokenDto tokenDto) = _AuthStateCompleted;
+  const factory AuthState.completed(UserWithTokenDto userWithTokenDto) = _AuthStateCompleted;
 
   const factory AuthState.failed(String message) = _AuthStateFailed;
 

@@ -13,5 +13,6 @@
   "refresh": "Обновить",
   "attachedGeoPoint": "Прикреплённая точка",
   "onTheMap": "На карте",
-  "mapAppsNotFound": "Приложения с картами не найдены"
+  "mapAppsNotFound": "Приложения с картами не найдены",
+  "imageLoadingError": "Ошибка загрузки изображения"
 }

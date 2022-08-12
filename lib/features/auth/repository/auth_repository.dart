@@ -1,5 +1,6 @@
 import 'package:surf_practice_chat_flutter/features/auth/exceptions/auth_exception.dart';
 import 'package:surf_practice_chat_flutter/features/auth/models/token_dto.dart';
+import 'package:surf_practice_chat_flutter/features/auth/models/user_with_token_dto.dart';
 import 'package:surf_study_jam/surf_study_jam.dart';
 
 /// Basic interface of authorization logic.
@@ -18,7 +19,7 @@ abstract class IAuthRepository {
   /// retrieved in the end of authorization process.
   ///
   /// May throw an [AuthException].
-  Future<TokenDto> signIn({
+  Future<UserWithTokenDto> signIn({
     required String login,
     required String password,
   });
@@ -35,14 +36,23 @@ class AuthRepository implements IAuthRepository {
   AuthRepository(this._studyJamClient);
 
   @override
-  Future<TokenDto> signIn({
+  Future<UserWithTokenDto> signIn({
     required String login,
     required String password,
   }) async {
     try {
       final token = await _studyJamClient.signin(login, password);
+      final authorizedClient = _studyJamClient.getAuthorizedClient(token);
+      final sjUserDto = await authorizedClient.getUser();
 
-      return TokenDto(token: token);
+      if (sjUserDto == null) {
+        throw const AuthException('User not found');
+      }
+
+      return UserWithTokenDto.fromSJClient(
+        tokenDto: TokenDto(token: token),
+        sjUserDto: sjUserDto,
+      );
     } on Object catch (e, s) {
       Error.throwWithStackTrace(AuthException(e.toString()), s);
     }

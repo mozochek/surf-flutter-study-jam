@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  surf_study_jam: ^0.1.0+1
+  surf_study_jam: ^0.2.0+1
   cupertino_icons: ^1.0.5
   flutter_bloc: ^8.0.1
   bloc_concurrency: ^0.2.0
@@ -26,6 +26,7 @@ dependencies:
   flutter_svg: ^1.1.3
   flutter_list_view: ^1.1.18
   cached_network_image: ^3.2.1
+  provider: ^6.0.3
 
 dev_dependencies:
   flutter_test:
