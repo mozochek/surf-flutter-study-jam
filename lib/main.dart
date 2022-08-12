@@ -3,18 +3,10 @@ import 'dart:developer' as dev;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:surf_practice_chat_flutter/features/auth/screens/auth_screen.dart';
-import 'package:surf_practice_chat_flutter/features/core/l10n/app_localizations.dart';
-import 'package:surf_practice_chat_flutter/features/core/themes.dart';
+import 'package:surf_practice_chat_flutter/features/auth/features/login/presentation/login_screen.dart';
+import 'package:surf_practice_chat_flutter/features/core/presentation/l10n/app_localizations.dart';
+import 'package:surf_practice_chat_flutter/features/core/presentation/themes.dart';
 
-// TODO: кэширование токена
-// TODO: проработать навигацию и сделать выход из аккаунта
-// TODO: добавить сплэш на стороне флаттера и читать кэш
-// TODO: добавить кнопку скролла чата вниз, когда проскроллено вверх и начался скролл вниз
-// TODO: на экране авторизации сделать переходы по полям через фокус
-// TODO: доработать все текстовые поля для более удобного ввода
-// TODO: не забыть прогреть шейдеры
-// TODO: подрефакторить блоки
 Future<void> main() async {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -35,12 +27,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Surf Chat',
+      title: 'Telebum',
       theme: Themes.defaultTheme,
       onGenerateTitle: (context) => AppLocalizations.of(context).appName,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      home: const AuthScreen(),
+      home: const LoginScreen(),
     );
   }
 }
