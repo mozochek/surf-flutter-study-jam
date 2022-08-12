@@ -76,7 +76,7 @@ class _ChatScreenScopeState extends State<ChatScreenScope> {
       ],
       child: BlocListener<MessageSenderBloc, MessageSenderState>(
         listener: (context, state) => state.mapOrNull(
-          completed: (_) => ChatScreenScope.resetCurrentMessage(context),
+          inProgress: (_) => ChatScreenScope.resetCurrentMessage(context),
         ),
         child: widget.child,
       ),

@@ -65,4 +65,9 @@ class AuthState with _$AuthState {
   const factory AuthState.completed(TokenDto tokenDto) = _AuthStateCompleted;
 
   const factory AuthState.failed(String message) = _AuthStateFailed;
+
+  bool get isInProgress => maybeMap(
+        orElse: () => false,
+        inProgress: (_) => true,
+      );
 }
